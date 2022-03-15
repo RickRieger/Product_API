@@ -15,5 +15,10 @@ def products_list(request):
     return Response(serializer.data)
 
 
+  elif request.method == 'POST':   
+    serializer = ProductSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     
