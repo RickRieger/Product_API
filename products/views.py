@@ -22,3 +22,9 @@ def products_list(request):
     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     
+@api_view(['GET'])
+def products_detail(request, pk): 
+  product = get_object_or_404(Product, pk=pk) 
+  if request.method == 'GET': 
+    serializer = ProductSerializer(product)
+    return Response(serializer.data) 
