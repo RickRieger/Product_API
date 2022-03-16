@@ -1,3 +1,4 @@
+from itertools import product
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -40,22 +41,22 @@ def products_detail(request, pk):
       return Response(status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['GET', 'POST'])
-def reviews_list(request):
+def reviews_list(request, fk=''):
 
   if request.method == 'GET':
     reviews = Review.objects.all()                     
     serializer = ReviewSerializer(reviews, many=True)
     return Response(serializer.data)  
 
-  elif request.method == 'POST':   
-    serializer = ReviewSerializer(data=request.data)
+  elif request.method == 'POST':
+    found_product = Product.objects.get(id=fk)   
+    serializer = ReviewSerializer(data = request.data)
     serializer.is_valid(raise_exception=True)
-    serializer.save()
+    serializer.save(product = found_product)
     return Response(serializer.data, status=status.HTTP_201_CREATED)  
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def reviews_detail(request, pk): 
-  print('=====000000=====')
   review = get_object_or_404(Review, pk=pk) 
   if request.method == 'GET': 
     serializer = ReviewSerializer(review)
@@ -68,3 +69,10 @@ def reviews_detail(request, pk):
   elif request.method == 'DELETE':
       review.delete()
       return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET'])
+def all_reviews_by_product(request,fk):
+    reviews = Review.objects.filter(product_id = fk)                     
+    serializer = ReviewSerializer(reviews, many=True)
+    return Response(serializer.data)  
+   

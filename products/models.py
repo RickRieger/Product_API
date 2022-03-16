@@ -12,4 +12,4 @@ class Product(models.Model):
 class Review(models.Model):
     review = models.TextField()
     date_added = models.DateField(("Date"), auto_now_add = True)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)  
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, null=True)  
